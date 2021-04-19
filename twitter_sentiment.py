@@ -7,10 +7,10 @@ import pandas as pd
 
 class TwitterClient(object):
     def __init__(self):
-        consumer_key = 'Y8rsWrgliX1kMXNn4aXHRuImI'
-        consumer_secret = 'l1gvetFqo7lKvKgEunwGx7kCVMenjdT5XmKxxbmzGzjJlLrY0V'
-        access_token = '1228413396229423104-9So3XC53gY3eXsnXoUHDlWRn6uk9r7'
-        access_token_secret = 'hn5P1B48k6YlJg3eV6s37t5DH5byMilIMZQSJ3ttAQee5'
+        consumer_key = ''
+        consumer_secret = ''
+        access_token = ''
+        access_token_secret = ''
 
         # attempt authentication
         try:
