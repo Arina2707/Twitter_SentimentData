@@ -3,14 +3,16 @@ import tweepy
 from tweepy import OAuthHandler
 from textblob import TextBlob
 import pandas as pd
+import yaml
 
 
 class TwitterClient(object):
     def __init__(self):
-        consumer_key = ''
-        consumer_secret = ''
-        access_token = ''
-        access_token_secret = ''
+        credentials_data = self.process_yaml()
+        consumer_key = credentials_data["search_tweets_api"]["consumer_key"]
+        consumer_secret = credentials_data["search_tweets_api"]["consumer_secret"]
+        access_token = credentials_data["search_tweets_api"]["access_token"]
+        access_token_secret = credentials_data["search_tweets_api"]["access_token_secret"]
 
         # attempt authentication
         try:
@@ -22,6 +24,11 @@ class TwitterClient(object):
             self.api = tweepy.API(self.auth)
         except:
             print("Error: Authentication Failed")
+
+    @staticmethod
+    def process_yaml(self):
+        with open("config.yaml") as file:
+            return yaml.safe_load(file)
 
     def clean_tweet(self, tweet):
         '''
