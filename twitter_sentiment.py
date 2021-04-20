@@ -26,7 +26,7 @@ class TwitterClient(object):
             print("Error: Authentication Failed")
 
     @staticmethod
-    def process_yaml(self):
+    def process_yaml():
         with open("config.yaml") as file:
             return yaml.safe_load(file)
 
@@ -62,7 +62,7 @@ class TwitterClient(object):
         try:
             # call twitter api to fetch tweets
             fetched_tweets = self.api.search(q=query, count=count)
-
+            all_tweets = []
             # parsing tweets one by one
             for tweet in fetched_tweets:
                 # empty dictionary to store required params of a tweet
@@ -74,7 +74,7 @@ class TwitterClient(object):
                 sentiment, score = self.get_tweet_sentiment(tweet.text)
                 parsed_tweet['sentiment'] = sentiment
                 parsed_tweet['score'] = score
-
+                all_tweets.append(tweet.text)
                 # appending parsed tweet to tweets list
                 if tweet.retweet_count > 0:
                     # if tweet has retweets, ensure that it is appended only once
@@ -84,7 +84,7 @@ class TwitterClient(object):
                     tweets.append(parsed_tweet)
 
             # return parsed tweets
-            return tweets
+            return tweets, ";".join(all_tweets)
 
         except tweepy.TweepError as e:
             # print error (if any)
@@ -93,7 +93,7 @@ class TwitterClient(object):
 
 def count_scores(q):
     api = TwitterClient()
-    tweets = api.get_tweets(query=q, count=200)
+    tweets, all_tweets = api.get_tweets(query=q, count=200)
     mentions = len(tweets)
     print("Number of mentions: {}".format(mentions))
 
@@ -108,27 +108,29 @@ def count_scores(q):
     else:
         positive, negative, neutral, avg_score = 0,0,0,0
 
-    return mentions, positive, negative, neutral, avg_score
+    return mentions, positive, negative, neutral, avg_score, all_tweets
 
 
 if __name__ == "__main__":
     data = pd.read_excel(r"C:\Users\maxim\OneDrive\Desktop\folder\diplom\data\parsing\final_companies.xlsx")
     companies = list(data['Company'])
-    mentions, positive, negative, neutral, avg_score = [], [], [], [], []
+    mentions, positive, negative, neutral, avg_score, tweets = [], [], [], [], [], []
 
     for company in companies:
-        v1, v2, v3, v4, v5 = count_scores(company)
-        print(v1, v2, v3, v4, v5)
+        v1, v2, v3, v4, v5, v6 = count_scores(company)
+        print(v1, v2, v3, v4, v5, v6)
         mentions.append(v1)
         positive.append(v2)
         negative.append(v3)
         neutral.append(v4)
         avg_score.append(v5)
+        tweets.append(v6)
 
     data['Mentions'] = mentions
     data['Positiveness'] = positive
     data['Negativeness'] = negative
     data['Neutralness'] = neutral
     data['Average positiveness'] = avg_score
+    data['Tweets'] = tweets
 
     data.to_excel(r"C:\Users\maxim\OneDrive\Desktop\folder\diplom\data\parsing\final_companies_with_text.xlsx")
