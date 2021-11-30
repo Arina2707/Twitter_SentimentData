@@ -1,4 +1,4 @@
-# Tool for Twitter posts analysis of laser companies.
+# Tool for Twitter posts analysis of laser companies
 
 This is the first part of **5-stage project**, connected with scoring the companies in laser industry.
 
